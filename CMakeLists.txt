@@ -16,7 +16,7 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(FlightPaths src/flight_paths.cpp src/graph_builder.cpp src/path_finder.cpp)
-add_executable(graph_builder_test src/tests/graph_builder_test.cpp)
+add_executable(graph_builder_test src/tests/graph_builder_test.cpp src/graph_builder.cpp)
 
 target_link_libraries(graph_builder_test GTest::gtest_main)
 target_compile_features(FlightPaths PUBLIC cxx_std_20)
