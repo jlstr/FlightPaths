@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "./headers/graph.h"
 #include "./headers/graph_builder.h"
 #include "./headers/path_finder.h"
 using namespace std;
@@ -16,6 +15,7 @@ int main() {
 
   vector<string> cities = { "Castle Black", "Winterfell", "Riverrun", "King's Landing" };
   Graph graph = GraphBuilder::assemble(cost_matrix, cities);
+
   PathFinder* path_finder = new PathFinder(graph);
   auto result = path_finder->solve("Castle Black", "Winterfell");
 
