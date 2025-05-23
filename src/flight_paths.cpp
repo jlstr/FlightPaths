@@ -3,7 +3,7 @@
 #include <string>
 #include "./headers/graph.h"
 #include "./headers/graph_builder.h"
-// #include "./path_finder.cpp"
+#include "./headers/path_finder.h"
 using namespace std;
 
 int main() {
@@ -14,13 +14,13 @@ int main() {
     { 0, 0, 0, 0 },
   };
 
-  // vector<string> cities = { "Castle Black", "Winterfell", "Riverrun", "King's Landing" };
-  // Graph graph = GraphBuilder::assemble(cost_matrix, cities);
-  // PathFinder* path_finder = new PathFinder(graph);
-  // auto result = path_finder->solve("Castle Black", "Winterfell");
+  vector<string> cities = { "Castle Black", "Winterfell", "Riverrun", "King's Landing" };
+  Graph graph = GraphBuilder::assemble(cost_matrix, cities);
+  PathFinder* path_finder = new PathFinder(graph);
+  auto result = path_finder->solve("Castle Black", "Winterfell");
 
-  // for (auto& [path, cost]: result)
-  //   cout << path << ": " << cost << endl;
+  for (auto& [path, cost]: result)
+    cout << path << ": " << cost << endl;
 
   return 0;
 }
