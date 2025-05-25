@@ -6,9 +6,13 @@
 using namespace std;
 
 class DataLoader {
+private:
+  string root;
+
 public:
-  vector<string> loadCities(istream& in);
-  vector<vector<int>> loadCosts(istream& in);
+  DataLoader(string root);
+  vector<string> loadCities();
+  vector<vector<int>> loadCosts();
 
 private:
   bool isNumber(string s);
