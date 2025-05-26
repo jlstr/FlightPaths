@@ -77,3 +77,16 @@ TEST_F(GraphBuilderTest, NoEdgesWhenMatrixIsZeroExceptDiagonal) {
   Graph graph = assemble();
   EXPECT_TRUE(graph.empty());
 }
+
+TEST_F(GraphBuilderTest, ThrowsWhenMatrixRowsDoNotMatchCityCount) {
+  cost_matrix = {
+    { 0, 10, 20 }, 
+    { 0,  0, 30 }
+  };
+
+  cities = { "Bogotá", "Medellín" };
+
+  EXPECT_THROW({
+    assemble();
+  }, runtime_error);
+}
