@@ -59,7 +59,7 @@ vector<vector<int>> DataLoader::loadCosts() {
   }
 
   if (cost_matrix.size() != cost_matrix.front().size())
-    throw runtime_error("Invalid test data: " + full_path + " - rows and columns sizes don't match");
+    throw runtime_error("Invalid test data: " + full_path + " - Square Matrix required");
 
   return cost_matrix;
 }

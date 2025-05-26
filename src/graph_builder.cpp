@@ -10,6 +10,9 @@ Graph GraphBuilder::assemble(vector<vector<int>>& cost_matrix, vector<string>& c
   if (rows != num_cities)
     throw runtime_error("Invalid Input Matrix. Number of cities must match number of rows/columns");
 
+  for (auto& city: cities)
+    graph[city] = vector<pair<string, int>>();
+
   for (int i = 0; i < cost_matrix.size(); ++i) {
     if (cost_matrix[i].size() != num_cities)
       throw runtime_error("Invalid Input Matrix. Must be square.");

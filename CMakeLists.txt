@@ -17,9 +17,12 @@ enable_testing()
 
 add_executable(FlightPaths src/flight_paths.cpp src/graph_builder.cpp src/path_finder.cpp src/data_loader.cpp)
 add_executable(graph_builder_test src/tests/graph_builder_test.cpp src/graph_builder.cpp)
+add_executable(data_loader_test src/tests/data_loader_test.cpp src/data_loader.cpp)
 
 target_link_libraries(graph_builder_test GTest::gtest_main)
+target_link_libraries(data_loader_test GTest::gtest_main)
 target_compile_features(FlightPaths PUBLIC cxx_std_20)
 
 include(GoogleTest)
 gtest_discover_tests(graph_builder_test)
+gtest_discover_tests(data_loader_test)

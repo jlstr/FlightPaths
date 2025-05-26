@@ -29,7 +29,7 @@ protected:
 TEST_F(GraphBuilderTest, AssemblesCorrectGraphWithFourCities) {
   Graph graph = assemble();
 
-  ASSERT_EQ(graph.size(), 3);
+  ASSERT_EQ(graph.size(), 4);
 
   EXPECT_THAT(graph["Castle Black"], ElementsAre(
     make_pair(string("Winterfell"), 15),
@@ -46,7 +46,7 @@ TEST_F(GraphBuilderTest, AssemblesCorrectGraphWithFourCities) {
     make_pair(string("King's Landing"), 70)
   ));
 
-  EXPECT_EQ(graph.count("King's Landing"), 0);
+  EXPECT_TRUE(graph["King's Landing"].empty());
 }
 
 TEST_F(GraphBuilderTest, EmptyInputProducesEmptyGraph) {
@@ -62,7 +62,8 @@ TEST_F(GraphBuilderTest, SingleCityProducesEmptyGraph) {
   cities = { "Tokyo" };
 
   Graph graph = assemble();
-  EXPECT_TRUE(graph.empty());
+  ASSERT_EQ(graph.size(), 1);
+  EXPECT_TRUE(graph["Tokyo"].empty());
 }
 
 TEST_F(GraphBuilderTest, NoEdgesWhenMatrixIsZeroExceptDiagonal) {
@@ -75,7 +76,10 @@ TEST_F(GraphBuilderTest, NoEdgesWhenMatrixIsZeroExceptDiagonal) {
   cities = { "Paris", "New York", "London" };
 
   Graph graph = assemble();
-  EXPECT_TRUE(graph.empty());
+  ASSERT_EQ(graph.size(), 3);
+  EXPECT_TRUE(graph["Paris"].empty());
+  EXPECT_TRUE(graph["New York"].empty());
+  EXPECT_TRUE(graph["London"].empty());
 }
 
 TEST_F(GraphBuilderTest, ThrowsWhenMatrixRowsDoNotMatchCityCount) {

@@ -9,7 +9,7 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
   if (argc != 3) {
-    cerr << "Invalid number of arguments. Passed: " << argc - 1 << ". Required: " << 2 << endl;
+    // cerr << "Invalid number of arguments. Passed: " << argc - 1 << ". Required: " << 2 << endl;
     // return EXIT_FAILURE;
     // return 0;
   }
@@ -33,16 +33,16 @@ int main(int argc, char* argv[]) {
   }
 
   Graph graph;
+  vector<pair<string, int>> result;
 
   try {
     graph = GraphBuilder::assemble(cost_matrix, cities);
+    PathFinder* path_finder = new PathFinder(graph);
+    result = path_finder->solve("Castle Black", "Riverrun");
   } catch (runtime_error error) {
     cerr << error.what() << endl;
     return EXIT_FAILURE;
   }
-
-  PathFinder* path_finder = new PathFinder(graph);
-  auto result = path_finder->solve("Castle Black", "King's Landing");
 
   for (auto& [path, cost]: result)
     cout << path << ": " << cost << endl;
