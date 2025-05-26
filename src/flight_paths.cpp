@@ -9,11 +9,12 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
   if (argc != 3) {
-    // cerr << "Invalid number of arguments. Passed: " << argc - 1 << ". Required: " << 2 << endl;
-    // return EXIT_FAILURE;
-    // return 0;
+    cerr << "Invalid number of arguments. Passed: " << argc - 1 << ". Required: " << 2 << endl;
+    return EXIT_FAILURE;
   }
 
+  const string& start_city = string(argv[1]);
+  const string& end_city = string(argv[2]);
   fs::path root = fs::current_path();
 
   // Handle CMake internal build edge case
@@ -38,7 +39,7 @@ int main(int argc, char* argv[]) {
   try {
     graph = GraphBuilder::assemble(cost_matrix, cities);
     PathFinder* path_finder = new PathFinder(graph);
-    result = path_finder->solve("castle BLACK", "RiverRUN");
+    result = path_finder->solve(start_city, end_city);
   } catch (runtime_error error) {
     cerr << error.what() << endl;
     return EXIT_FAILURE;

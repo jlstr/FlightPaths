@@ -2,7 +2,6 @@
 #include <gmock/gmock.h>
 #include "./../headers/path_finder.h"
 using namespace std;
-using ::testing::UnorderedElementsAre;
 
 class PathFinderTest : public ::testing::Test {
 protected:
