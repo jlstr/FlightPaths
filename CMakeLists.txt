@@ -15,7 +15,7 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-add_executable(FlightPaths src/flight_paths.cpp src/graph_builder.cpp src/path_finder.cpp src/data_loader.cpp)
+add_executable(FlightPaths src/flight_paths.cpp src/graph_builder.cpp src/path_finder.cpp src/data_loader.cpp src/string_helper.cpp)
 add_executable(graph_builder_test src/tests/graph_builder_test.cpp src/graph_builder.cpp)
 add_executable(data_loader_test src/tests/data_loader_test.cpp src/data_loader.cpp)
 

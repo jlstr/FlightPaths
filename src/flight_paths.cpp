@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
   try {
     graph = GraphBuilder::assemble(cost_matrix, cities);
     PathFinder* path_finder = new PathFinder(graph);
-    result = path_finder->solve("Castle Black", "Riverrun");
+    result = path_finder->solve("castle BLACK", "RiverRUN");
   } catch (runtime_error error) {
     cerr << error.what() << endl;
     return EXIT_FAILURE;

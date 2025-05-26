@@ -6,6 +6,7 @@ using namespace std;
 class PathFinder {
 private:
   Graph graph;
+  unordered_map<string, string> city_name_mapper;
 
 public:
   PathFinder(Graph& graph);

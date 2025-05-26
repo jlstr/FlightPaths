@@ -1,20 +1,27 @@
 #include <iostream>
 #include "./headers/path_finder.h"
+#include "./headers/string_helper.h"
 using namespace std;
 
 PathFinder::PathFinder(Graph& graph) {
   this->graph = graph;
+
+  for (auto& [city_key, _]: graph)
+    city_name_mapper[StringHelper::toLower(city_key)] = city_key;
 }
 
 vector<pair<string, int>> PathFinder::solve(const string& start_city, const string& end_city) {
-  if (!graph.contains(start_city))
+  string start_city_lowercased = StringHelper::toLower(start_city);
+  string end_city_lowercased = StringHelper::toLower(end_city);
+  vector<pair<string, int>> result;
+
+  if (!city_name_mapper.contains(start_city_lowercased))
     throw runtime_error(start_city + " not found in test data");
 
-  if (!graph.contains(end_city))
+  if (!city_name_mapper.contains(end_city_lowercased))
     throw runtime_error(end_city + " not found in test data");
 
-  vector<pair<string, int>> result;
-  dfsTraversal(start_city, end_city, "", 0, result);
+  dfsTraversal(city_name_mapper[start_city_lowercased], city_name_mapper[end_city_lowercased], "", 0, result);
 
   return result;
 }
