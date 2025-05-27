@@ -15,5 +15,7 @@ public:
   vector<vector<int>> loadCosts();
 
 private:
-  bool isNumber(string s);
+  bool isNumber(const string& s);
+  static vector<string> parseCsvLine(const string& line);
+  void validateMatrix(vector<vector<int>>& cost_matrix, const string& full_path);
 };

@@ -1,36 +1,27 @@
 #include "./headers/data_loader.h"
 using namespace std;
 
-DataLoader::DataLoader(string root): root(root) {}
+#define MAX_SIZE 8
+
+DataLoader::DataLoader(string root): root(std::move(root)) {}
 
 vector<string> DataLoader::loadCities() {
   string full_path = root + "/test_data/cities.csv";
-  ifstream file = ifstream(full_path);
-  vector<string> cities;
+  ifstream file(full_path);
   string line;
 
   if (!file)
     throw runtime_error("Failed to load: " + full_path);
 
-  if (getline(file, line)) {
-    int start, end = 0;
-    char token = ',';
+  if (getline(file, line))
+    return parseCsvLine(line);
 
-    while ((start = line.find_first_not_of(token, end)) != string::npos) {
-      end = line.find(token, start);
-      string city = line.substr(start, end - start);
-
-      if (!city.empty())
-        cities.push_back(city);
-    }
-  }
-
-  return cities;
+  return {};
 }
 
 vector<vector<int>> DataLoader::loadCosts() {
   string full_path = root + "/test_data/costs.csv";
-  ifstream file = ifstream(full_path);
+  ifstream file(full_path);
   vector<vector<int>> cost_matrix;
   string line;
 
@@ -38,34 +29,62 @@ vector<vector<int>> DataLoader::loadCosts() {
     throw runtime_error("Failed to load: " + full_path);
 
   while (getline(file, line)) {
-    int start, end = 0;
-    char token = ',';
+    vector<string> tokens = parseCsvLine(line);
     vector<int> row;
 
-    while ((start = line.find_first_not_of(token, end)) != string::npos) {
-      end = line.find(token, start);
-      string cost = line.substr(start, end - start);
-
+    for (const string& cost: tokens) {
+      // cost matrix should contain numbers only
       if (!isNumber(cost))
-        throw runtime_error("Invalid test data: " + full_path + " - non numerical cost found");
+        throw runtime_error("Invalid test data: " + full_path + " - integer numerical data required");
+      
+      int cost_n = stoi(cost);
+      
+      // Assuming negative numbers are not allowed either
+      if (cost_n < 0)
+        throw runtime_error("Invalid test data: " + full_path + " - negative value found");
 
       row.push_back(stoi(cost));
     }
 
+    // At each step check if the rows loaded are the same size
     if (!cost_matrix.empty() && cost_matrix.back().size() != row.size())
-      throw runtime_error("Invalid test data: " + full_path + " - rows incomplete or different sizes");
+      throw runtime_error("Invalid test data: " + full_path + " - row sizes not equal");
 
     cost_matrix.push_back(row);
   }
 
-  if (cost_matrix.size() != cost_matrix.front().size())
-    throw runtime_error("Invalid test data: " + full_path + " - Square Matrix required");
+  validateMatrix(cost_matrix, full_path);
 
   return cost_matrix;
 }
 
-bool DataLoader::isNumber(string s) {
-  return !s.empty() && find_if(s.begin(),  s.end(), [](unsigned char c) {
-    return !isdigit(c);
-  }) == s.end();
+bool DataLoader::isNumber(const string& s) {
+  return !s.empty() && all_of(s.begin(), s.end(), ::isdigit);
+}
+
+vector<string> DataLoader::parseCsvLine(const string& line) {
+  vector<string> tokens;
+  int start, end = 0;
+  char delim = ',';
+
+  while ((start = line.find_first_not_of(delim, end)) != string::npos) {
+    end = line.find(delim, start);
+    string token = line.substr(start, end - start);
+
+    if (!token.empty())
+      tokens.push_back(token);
+  }
+
+  return tokens;
+}
+
+void DataLoader::validateMatrix(vector<vector<int>>& cost_matrix, const string& full_path) {
+  if (cost_matrix.empty())
+    throw runtime_error("Invalid test data: " + full_path + " - Empty matrix");
+
+  if (cost_matrix.size() != cost_matrix.front().size())
+    throw runtime_error("Invalid test data: " + full_path + " - Square Matrix required");
+
+  if (cost_matrix.size() > MAX_SIZE)
+    throw runtime_error("Invalid test data: " + full_path + " - Matrix Max size is 8x8");
 }

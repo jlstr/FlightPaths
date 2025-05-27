@@ -13,18 +13,25 @@ int main(int argc, char* argv[]) {
     return EXIT_FAILURE;
   }
 
+  // Program's main pipeline starts here
+  //
+  // 1. capture input cities
   const string& start_city = string(argv[1]);
   const string& end_city = string(argv[2]);
+
+  // get a hold of the absolute path of the current working directory 
   fs::path root = fs::current_path();
 
   // Handle CMake internal build edge case
   if (root.string().find("build") != string::npos)
     root = root.parent_path();
 
+  // DataLoader is the main class with the File Loading Logic
   DataLoader data_loader(root.string());
   vector<string> cities;
   vector<vector<int>> cost_matrix;
 
+  // 2. Load test data from the CSV files located at /test_data
   try {
     cities = data_loader.loadCities();
     cost_matrix = data_loader.loadCosts();
@@ -33,9 +40,13 @@ int main(int argc, char* argv[]) {
     return EXIT_FAILURE;
   }
 
+  // Graph will be a Directed Acyclic Graph (DAG) that will assembled
+  // from the test data CSV files
   Graph graph;
   vector<pair<string, int>> result;
 
+  // 3. Assemble Graph and pass it to the PathFinder class  to find possible
+  // resulting paths
   try {
     graph = GraphBuilder::assemble(cost_matrix, cities);
     PathFinder* path_finder = new PathFinder(graph);
@@ -45,6 +56,7 @@ int main(int argc, char* argv[]) {
     return EXIT_FAILURE;
   }
 
+  // 4. Output paths to C++'s Standard Output Stream
   for (auto& [path, cost]: result)
     cout << path << ": " << cost << endl;
 

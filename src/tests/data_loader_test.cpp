@@ -56,7 +56,11 @@ TEST_F(DataLoaderTest, ThrowsIfCostFileMissing) {
 
 TEST_F(DataLoaderTest, ThrowsIfCostFileContainsNonNumericData) {
   writeFile("test_data/cities.csv", "A,B,C");
-  writeFile("test_data/costs.csv", "0,1,X\n1,0,2\n3,4,0");
+  writeFile("test_data/costs.csv",
+    "0,1,X\n"
+    "1,0,2\n"
+    "3,4,0"
+  );
 
   DataLoader loader(test_root);
   EXPECT_THROW(loader.loadCosts(), runtime_error);
@@ -64,7 +68,11 @@ TEST_F(DataLoaderTest, ThrowsIfCostFileContainsNonNumericData) {
 
 TEST_F(DataLoaderTest, ThrowsIfRowsAreDifferentLengths) {
   writeFile("test_data/cities.csv", "A,B,C");
-  writeFile("test_data/costs.csv", "0,1,2\n1,0\n3,4,0");
+  writeFile("test_data/costs.csv",
+    "0,1,2\n"
+    "1,0\n"
+    "3,4,0"
+  );
 
   DataLoader loader(test_root);
   EXPECT_THROW(loader.loadCosts(), runtime_error);
@@ -72,7 +80,28 @@ TEST_F(DataLoaderTest, ThrowsIfRowsAreDifferentLengths) {
 
 TEST_F(DataLoaderTest, ThrowsIfMatrixIsNotSquare) {
   writeFile("test_data/cities.csv", "A,B,C");
-  writeFile("test_data/costs.csv", "0,1,2\n3,0,4");
+  writeFile("test_data/costs.csv",
+    "0,1,2\n"
+    "3,0,4"
+  );
+
+  DataLoader loader(test_root);
+  EXPECT_THROW(loader.loadCosts(), runtime_error);
+}
+
+TEST_F(DataLoaderTest, ThrowsIfMatrixIsBiggerThan8x8) {
+  writeFile("test_data/cities.csv", "A,B,C,D,E,F,G,H,I");
+  writeFile("test_data/costs.csv",
+  "1,1,1,1,1,1,1,1,1\n"
+  "1,1,1,1,1,1,1,1,1\n"
+  "1,1,1,1,1,1,1,1,1\n"
+  "1,1,1,1,1,1,1,1,1\n"
+  "1,1,1,1,1,1,1,1,1\n"
+  "1,1,1,1,1,1,1,1,1\n"
+  "1,1,1,1,1,1,1,1,1\n"
+  "1,1,1,1,1,1,1,1,1\n"
+  "1,1,1,1,1,1,1,1,1\n"
+);
 
   DataLoader loader(test_root);
   EXPECT_THROW(loader.loadCosts(), runtime_error);
