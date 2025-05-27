@@ -67,9 +67,7 @@ TEST_F(PathFinderTest, ReturnsEmptyWhenNoPathExists) {
   };
 
   PathFinder finder(g);
-  auto paths = finder.solve("A", "C");
-
-  EXPECT_TRUE(paths.empty());
+  EXPECT_THROW(finder.solve("A", "C"), runtime_error);
 }
 
 TEST_F(PathFinderTest, ThrowsWhenCityNotFound) {

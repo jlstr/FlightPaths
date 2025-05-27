@@ -23,6 +23,9 @@ vector<pair<string, int>> PathFinder::solve(const string& start_city, const stri
 
   dfsTraversal(city_name_mapper[start_city_lowercased], city_name_mapper[end_city_lowercased], "", 0, result);
 
+  if (result.empty())
+    throw runtime_error("No paths found between " + start_city + " and " + end_city);
+
   return result;
 }
 
