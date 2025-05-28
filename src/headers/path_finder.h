@@ -3,6 +3,8 @@
 #include "./graph.h"
 using namespace std;
 
+typedef pair<string, int> PathResult;
+
 class PathFinder {
 private:
   Graph graph;

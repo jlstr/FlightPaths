@@ -4,6 +4,7 @@
 #include "./headers/graph_builder.h"
 #include "./headers/path_finder.h"
 #include "./headers/data_loader.h"
+#include "./headers/string_helper.h"
 namespace fs = std::filesystem;
 using namespace std;
 
@@ -16,8 +17,8 @@ int main(int argc, char* argv[]) {
   // Program's main pipeline starts here
   //
   // 1. capture input cities
-  const string& start_city = string(argv[1]);
-  const string& end_city = string(argv[2]);
+  const string& start_city = StringHelper::trim(string(argv[1]));
+  const string& end_city = StringHelper::trim(string(argv[2]));
 
   // get a hold of the absolute path of the current working directory 
   fs::path root = fs::current_path();
@@ -35,7 +36,7 @@ int main(int argc, char* argv[]) {
   try {
     cities = data_loader.loadCities();
     cost_matrix = data_loader.loadCosts();
-  } catch (runtime_error error) {
+  } catch (const runtime_error& error) {
     cerr << error.what() << endl;
     return EXIT_FAILURE;
   }
@@ -43,21 +44,21 @@ int main(int argc, char* argv[]) {
   // Graph will be a Directed Acyclic Graph (DAG) that will assembled
   // from the test data CSV files
   Graph graph;
-  vector<pair<string, int>> result;
+  vector<PathResult> discovered_paths;
 
-  // 3. Assemble Graph and pass it to the PathFinder class  to find possible
+  // 3. Assemble Graph and pass it to the PathFinder class to find possible
   // resulting paths
   try {
     graph = GraphBuilder::assemble(cost_matrix, cities);
-    PathFinder* path_finder = new PathFinder(graph);
-    result = path_finder->solve(start_city, end_city);
-  } catch (runtime_error error) {
+    PathFinder path_finder(graph);
+    discovered_paths = path_finder.solve(start_city, end_city);
+  } catch (const runtime_error& error) {
     cerr << error.what() << endl;
     return EXIT_FAILURE;
   }
 
   // 4. Output paths to C++'s Standard Output Stream
-  for (auto& [path, cost]: result)
+  for (auto& [path, cost]: discovered_paths)
     cout << path << ": " << cost << endl;
 
   return EXIT_SUCCESS;

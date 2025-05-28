@@ -10,10 +10,10 @@ PathFinder::PathFinder(Graph& graph) {
     city_name_mapper[StringHelper::toLower(city_key)] = city_key;
 }
 
-vector<pair<string, int>> PathFinder::solve(const string& start_city, const string& end_city) {
+vector<PathResult> PathFinder::solve(const string& start_city, const string& end_city) {
   string start_city_lowercased = StringHelper::toLower(start_city);
   string end_city_lowercased = StringHelper::toLower(end_city);
-  vector<pair<string, int>> result;
+  vector<PathResult> result;
 
   if (!city_name_mapper.contains(start_city_lowercased))
     throw runtime_error(start_city + " not found in test data");
@@ -24,13 +24,13 @@ vector<pair<string, int>> PathFinder::solve(const string& start_city, const stri
   dfsTraversal(city_name_mapper[start_city_lowercased], city_name_mapper[end_city_lowercased], "", 0, result);
 
   if (result.empty())
-    throw runtime_error("No paths found between " + start_city + " and " + end_city);
+    throw runtime_error("No paths were found From: " + start_city + " To: " + end_city);
 
   return result;
 }
 
 void PathFinder::dfsTraversal(const string& city, const string& end_city, string curr_path, int cost,
-  vector<pair<string, int>>& result) {
+  vector<PathResult>& result) {
   curr_path = curr_path + city + " -> ";
 
   if (city == end_city) {

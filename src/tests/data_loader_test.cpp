@@ -29,7 +29,11 @@ protected:
 
 TEST_F(DataLoaderTest, LoadsValidCitiesAndCostsCorrectly) {
   writeFile("test_data/cities.csv", "Alpha,Beta,Gamma");
-  writeFile("test_data/costs.csv", "0,1,2\n3,0,4\n5,6,0");
+  writeFile("test_data/costs.csv",
+    "0,1,2\n"
+    "0,0,4\n"
+    "0,0,0"
+  );
 
   DataLoader loader(test_root);
   vector<string> cities = loader.loadCities();
@@ -39,8 +43,8 @@ TEST_F(DataLoaderTest, LoadsValidCitiesAndCostsCorrectly) {
 
   ASSERT_EQ(costs.size(), 3);
   EXPECT_EQ(costs[0], vector<int>({ 0, 1, 2 }));
-  EXPECT_EQ(costs[1], vector<int>({ 3, 0, 4 }));
-  EXPECT_EQ(costs[2], vector<int>({ 5, 6, 0 }));
+  EXPECT_EQ(costs[1], vector<int>({ 0, 0, 4 }));
+  EXPECT_EQ(costs[2], vector<int>({ 0, 0, 0 }));
 }
 
 TEST_F(DataLoaderTest, ThrowsIfCityFileMissing) {
@@ -48,8 +52,28 @@ TEST_F(DataLoaderTest, ThrowsIfCityFileMissing) {
   EXPECT_THROW(loader.loadCities(), runtime_error);
 }
 
-TEST_F(DataLoaderTest, ThrowsIfCostFileMissing) {
+TEST_F(DataLoaderTest, ThrowsIfCostsFileMissing) {
   writeFile("test_data/cities.csv", "A,B");
+  DataLoader loader(test_root);
+  EXPECT_THROW(loader.loadCosts(), runtime_error);
+}
+
+TEST_F(DataLoaderTest, ThrowsIfCitiesFileIsEmpty) {
+  writeFile("test_data/cities.csv", "");
+  writeFile("test_data/costs.csv",
+    "0,1,2\n"
+    "0,0,3\n"
+    "0,0,0"
+  );
+
+  DataLoader loader(test_root);
+  EXPECT_THROW(loader.loadCities(), runtime_error);
+}
+
+TEST_F(DataLoaderTest, ThrowsIfCostsFileIsEmpty) {
+  writeFile("test_data/cities.csv", "A,B,C");
+  writeFile("test_data/costs.csv", "");
+
   DataLoader loader(test_root);
   EXPECT_THROW(loader.loadCosts(), runtime_error);
 }
@@ -58,8 +82,8 @@ TEST_F(DataLoaderTest, ThrowsIfCostFileContainsNonNumericData) {
   writeFile("test_data/cities.csv", "A,B,C");
   writeFile("test_data/costs.csv",
     "0,1,X\n"
-    "1,0,2\n"
-    "3,4,0"
+    "0,0,2\n"
+    "0,0,0"
   );
 
   DataLoader loader(test_root);
@@ -70,8 +94,8 @@ TEST_F(DataLoaderTest, ThrowsIfRowsAreDifferentLengths) {
   writeFile("test_data/cities.csv", "A,B,C");
   writeFile("test_data/costs.csv",
     "0,1,2\n"
-    "1,0\n"
-    "3,4,0"
+    "0,0\n"
+    "0,0,0"
   );
 
   DataLoader loader(test_root);
@@ -82,7 +106,7 @@ TEST_F(DataLoaderTest, ThrowsIfMatrixIsNotSquare) {
   writeFile("test_data/cities.csv", "A,B,C");
   writeFile("test_data/costs.csv",
     "0,1,2\n"
-    "3,0,4"
+    "0,0,4"
   );
 
   DataLoader loader(test_root);
@@ -92,17 +116,53 @@ TEST_F(DataLoaderTest, ThrowsIfMatrixIsNotSquare) {
 TEST_F(DataLoaderTest, ThrowsIfMatrixIsBiggerThan8x8) {
   writeFile("test_data/cities.csv", "A,B,C,D,E,F,G,H,I");
   writeFile("test_data/costs.csv",
-  "1,1,1,1,1,1,1,1,1\n"
-  "1,1,1,1,1,1,1,1,1\n"
-  "1,1,1,1,1,1,1,1,1\n"
-  "1,1,1,1,1,1,1,1,1\n"
-  "1,1,1,1,1,1,1,1,1\n"
-  "1,1,1,1,1,1,1,1,1\n"
-  "1,1,1,1,1,1,1,1,1\n"
-  "1,1,1,1,1,1,1,1,1\n"
-  "1,1,1,1,1,1,1,1,1\n"
+  "0,1,1,1,1,1,1,1,1\n"
+  "0,0,1,1,1,1,1,1,1\n"
+  "0,0,0,1,1,1,1,1,1\n"
+  "0,0,0,0,1,1,1,1,1\n"
+  "0,0,0,0,0,1,1,1,1\n"
+  "0,0,0,0,0,0,1,1,1\n"
+  "0,0,0,0,0,0,0,1,1\n"
+  "0,0,0,0,0,0,0,0,1\n"
+  "0,0,0,0,0,0,0,0,0"
 );
 
   DataLoader loader(test_root);
   EXPECT_THROW(loader.loadCosts(), runtime_error);
+}
+
+TEST_F(DataLoaderTest, ThrowsIfCitiesAreNotUnique) {
+  writeFile("test_data/cities.csv", "Bogota,Medellin,Bogota");
+  writeFile("test_data/costs.csv",
+    "0,1,2\n"
+    "0,0,3\n"
+    "0,0,0"
+  );
+
+  DataLoader loader(test_root);
+  EXPECT_THROW(loader.loadCities(), runtime_error);
+}
+
+TEST_F(DataLoaderTest, ThrowsIfCitiesAreNotUniqueIgnoringCase) {
+  writeFile("test_data/cities.csv", "Medellin,Bogota,medellin");
+  writeFile("test_data/costs.csv",
+    "0,1,2\n"
+    "0,0,3\n"
+    "0,0,0"
+  );
+
+  DataLoader loader(test_root);
+  EXPECT_THROW(loader.loadCities(), runtime_error);
+}
+
+TEST_F(DataLoaderTest, LoadsUniqueCitiesWithDifferentNames) {
+  writeFile("test_data/cities.csv", "Bogota,Medellin,Cali");
+  writeFile("test_data/costs.csv",
+    "0,1,2\n"
+    "0,0,4\n"
+    "0,0,0"
+  );
+
+  DataLoader loader(test_root);
+  EXPECT_NO_THROW(loader.loadCities());
 }

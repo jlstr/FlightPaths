@@ -9,7 +9,7 @@ protected:
 
   void SetUp() override {
     graph = {
-      { "Castle Black", { { "Winterfell", 15 }, { "Riverrun", 80 } } },
+      { "Castle Black", { { "Winterfell", 15 }, { "Riverrun", 80 }, { "King's Landing", 90 } } },
       { "Winterfell", { { "Riverrun", 40 }, { "King's Landing", 50 } } },
       { "Riverrun", { { "King's Landing", 70 } } },
       { "King's Landing", {} }
@@ -22,9 +22,10 @@ TEST_F(PathFinderTest, FindsAllPathsBetweenTwoCities) {
   auto paths = finder.solve("Castle Black", "King's Landing");
 
   std::vector<std::pair<std::string, int>> expected = {
-    { "Castle Black -> Winterfell -> King's Landing", 65 },
     { "Castle Black -> Winterfell -> Riverrun -> King's Landing", 125 },
-    { "Castle Black -> Riverrun -> King's Landing", 150 }
+    { "Castle Black -> Winterfell -> King's Landing", 65 },
+    { "Castle Black -> Riverrun -> King's Landing", 150 },
+    { "Castle Black -> King's Landing", 90 }
   };
 
   auto sort_fn = [](const auto& a, const auto& b) {

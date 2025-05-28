@@ -1,4 +1,5 @@
 #include "./headers/data_loader.h"
+#include "./headers/string_helper.h"
 using namespace std;
 
 #define MAX_SIZE 8
@@ -9,14 +10,17 @@ vector<string> DataLoader::loadCities() {
   string full_path = root + "/test_data/cities.csv";
   ifstream file(full_path);
   string line;
+  vector<string> cities;
 
   if (!file)
     throw runtime_error("Failed to load: " + full_path);
 
   if (getline(file, line))
-    return parseCsvLine(line);
+    cities = parseCsvLine(line);
 
-  return {};
+  validateCities(cities, full_path);
+
+  return cities;
 }
 
 vector<vector<int>> DataLoader::loadCosts() {
@@ -43,7 +47,7 @@ vector<vector<int>> DataLoader::loadCosts() {
       if (cost_n < 0)
         throw runtime_error("Invalid test data: " + full_path + " - negative value found");
 
-      row.push_back(stoi(cost));
+      row.push_back(cost_n);
     }
 
     // At each step check if the rows loaded are the same size
@@ -69,7 +73,7 @@ vector<string> DataLoader::parseCsvLine(const string& line) {
 
   while ((start = line.find_first_not_of(delim, end)) != string::npos) {
     end = line.find(delim, start);
-    string token = line.substr(start, end - start);
+    string token = StringHelper::trim(line.substr(start, end - start));
 
     if (!token.empty())
       tokens.push_back(token);
@@ -87,4 +91,19 @@ void DataLoader::validateMatrix(vector<vector<int>>& cost_matrix, const string& 
 
   if (cost_matrix.size() > MAX_SIZE)
     throw runtime_error("Invalid test data: " + full_path + " - Matrix Max size is 8x8");
+}
+
+void DataLoader::validateCities(vector<string>& cities, const string& full_path) {
+  if (cities.empty())
+    throw runtime_error("Invalid test data: " + full_path + " - no cities found");
+
+  unordered_set<string> seen;
+
+  for (auto& city: cities) {
+    auto city_lowercased = StringHelper::toLower(city);
+    if (seen.contains(city_lowercased))
+      throw runtime_error("Invalid test data: " + full_path + " - cities must be unique");
+
+    seen.insert(city_lowercased);
+  }
 }

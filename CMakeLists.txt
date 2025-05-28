@@ -17,7 +17,7 @@ enable_testing()
 
 add_executable(FlightPaths src/flight_paths.cpp src/graph_builder.cpp src/path_finder.cpp src/data_loader.cpp src/string_helper.cpp)
 add_executable(graph_builder_test src/tests/graph_builder_test.cpp src/graph_builder.cpp)
-add_executable(data_loader_test src/tests/data_loader_test.cpp src/data_loader.cpp)
+add_executable(data_loader_test src/tests/data_loader_test.cpp src/data_loader.cpp src/string_helper.cpp)
 add_executable(path_finder_test src/tests/path_finder_test.cpp src/path_finder.cpp src/string_helper.cpp)
 add_executable(string_helper_test src/tests/string_helper_test.cpp src/string_helper.cpp)
 

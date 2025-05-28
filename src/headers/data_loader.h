@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <unordered_set>
 #include <fstream>
 using namespace std;
 
@@ -18,4 +19,5 @@ private:
   bool isNumber(const string& s);
   static vector<string> parseCsvLine(const string& line);
   void validateMatrix(vector<vector<int>>& cost_matrix, const string& full_path);
+  void validateCities(vector<string>& cities, const string& full_path);
 };
