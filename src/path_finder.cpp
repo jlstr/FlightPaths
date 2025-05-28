@@ -15,6 +15,9 @@ vector<PathResult> PathFinder::solve(const string& start_city, const string& end
   string end_city_lowercased = StringHelper::toLower(end_city);
   vector<PathResult> result;
 
+  if (start_city_lowercased == end_city_lowercased)
+    throw runtime_error("Error - origin and destination cities must be different");
+
   if (!city_name_mapper.contains(start_city_lowercased))
     throw runtime_error(start_city + " not found in test data");
 
